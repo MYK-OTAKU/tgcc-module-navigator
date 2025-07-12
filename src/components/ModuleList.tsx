@@ -24,15 +24,28 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Loader2, AlertCircle, Clock, Hash, Edit, Trash2, Plus } from 'lucide-react';
+import { Loader2, AlertCircle, Clock, Hash, Edit, Trash2, Plus, Star, Calendar, User } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Module } from '../contexts/ModuleContext';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import ModuleStats from './ModuleStats';
+import ModuleSearch from './ModuleSearch';
+import { useModuleFilters } from '../hooks/useModuleFilters';
 
 const ModuleList = () => {
   const { state, dispatch } = useModuleContext();
   const { modules, loading, error } = state;
+  
+  // Filtres et tri
+  const {
+    filteredAndSortedModules,
+    searchTerm,
+    setSearchTerm,
+    sortBy,
+    sortOrder,
+    handleSortChange,
+  } = useModuleFilters(modules);
   
   // États pour la modification
   const [editingModule, setEditingModule] = useState<Module | null>(null);
@@ -107,10 +120,19 @@ const ModuleList = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span className="text-lg">Chargement des modules...</span>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary-light/20">
+        <div className="container mx-auto p-6">
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="text-center">
+              <div className="relative">
+                <div className="w-20 h-20 mx-auto mb-6 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-large animate-pulse-glow">
+                  <Loader2 className="h-10 w-10 text-white animate-spin" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-semibold text-foreground mb-2">Chargement des modules</h3>
+              <p className="text-muted-foreground animate-pulse">Récupération des données en cours...</p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -130,88 +152,149 @@ const ModuleList = () => {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      {/* Header avec actions */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-3xl font-bold text-foreground mb-2">Liste des modules</h2>
-          <p className="text-muted-foreground">
-            {modules.length} module{modules.length !== 1 ? 's' : ''} disponible{modules.length !== 1 ? 's' : ''}
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary-light/20">
+      <div className="container mx-auto p-6">
+        {/* Header avec titre et actions */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 gap-4">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              Gestion des Modules
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              {modules.length} module{modules.length !== 1 ? 's' : ''} • {filteredAndSortedModules.length} affiché{filteredAndSortedModules.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+          <Link to="/add">
+            <Button size="lg" className="bg-gradient-primary hover:opacity-90 shadow-glow text-white border-0 px-8 py-3 text-base font-medium transition-all duration-300 hover:scale-105">
+              <Plus className="h-5 w-5 mr-2" />
+              Nouveau module
+            </Button>
+          </Link>
         </div>
-        <Link to="/add">
-          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-            <Plus className="h-4 w-4 mr-2" />
-            Nouveau module
-          </Button>
-        </Link>
-      </div>
 
-      {modules.length === 0 ? (
-        <Card className="border-dashed border-2 border-slate-300 dark:border-slate-600">
-          <CardContent className="flex items-center justify-center py-16">
-            <div className="text-center">
-              <div className="text-4xl mb-4">📚</div>
-              <h3 className="text-xl font-semibold mb-2">Aucun module trouvé</h3>
-              <p className="text-muted-foreground mb-6">
-                Commencez par ajouter votre premier module !
-              </p>
-              <Link to="/add">
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Ajouter un module
+        {/* Statistiques */}
+        <ModuleStats />
+
+        {/* Barre de recherche et filtres */}
+        <ModuleSearch
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortChange={handleSortChange}
+        />
+
+        {/* Contenu principal */}
+        {modules.length === 0 ? (
+          <Card className="border-dashed border-2 border-primary/20 bg-gradient-glass backdrop-blur-sm animate-fade-in">
+            <CardContent className="flex items-center justify-center py-20">
+              <div className="text-center max-w-md">
+                <div className="w-20 h-20 mx-auto mb-6 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-large animate-float">
+                  <Star className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground mb-3">Aucun module trouvé</h3>
+                <p className="text-muted-foreground mb-8 leading-relaxed">
+                  Créez votre premier module de formation pour commencer à organiser votre contenu pédagogique !
+                </p>
+                <Link to="/add">
+                  <Button size="lg" className="bg-gradient-primary hover:opacity-90 shadow-glow">
+                    <Plus className="h-5 w-5 mr-2" />
+                    Créer un module
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        ) : filteredAndSortedModules.length === 0 ? (
+          <Card className="border-dashed border-2 border-primary/20 bg-gradient-glass backdrop-blur-sm">
+            <CardContent className="flex items-center justify-center py-16">
+              <div className="text-center">
+                <div className="text-6xl mb-4">🔍</div>
+                <h3 className="text-xl font-semibold mb-2">Aucun résultat</h3>
+                <p className="text-muted-foreground mb-4">
+                  Aucun module ne correspond à votre recherche "{searchTerm}"
+                </p>
+                <Button variant="outline" onClick={() => setSearchTerm('')}>
+                  Effacer la recherche
                 </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {modules.map((module) => (
-            <Card key={module.id} className="group hover:shadow-lg transition-all duration-300 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg font-semibold truncate mb-2">
-                      {module.nom}
-                    </CardTitle>
-                    <Badge variant="secondary" className="flex items-center gap-1 w-fit">
-                      <Hash className="h-3 w-3" />
-                      {module.id}
-                    </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            {filteredAndSortedModules.map((module, index) => (
+              <Card 
+                key={module.id} 
+                className="group hover:shadow-glow transition-all duration-500 border-0 bg-gradient-glass backdrop-blur-sm hover:scale-[1.02] animate-fade-in" 
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <CardHeader className="pb-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 min-w-0">
+                      <CardTitle className="text-lg font-bold text-foreground truncate mb-2 group-hover:text-primary transition-colors">
+                        {module.nom}
+                      </CardTitle>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge variant="secondary" className="text-xs font-medium bg-primary-light text-primary border-0">
+                          <Hash className="h-3 w-3 mr-1" />
+                          {module.id}
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    {/* Actions */}
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditClick(module)}
+                        className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary hover:scale-110 transition-all duration-200"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteClick(module.id)}
+                        className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive hover:scale-110 transition-all duration-200"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleEditClick(module)}
-                      className="h-8 w-8 p-0 hover:bg-blue-100 hover:text-blue-600 dark:hover:bg-blue-900/30"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteClick(module.id)}
-                      className="h-8 w-8 p-0 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                </CardHeader>
+                
+                <CardContent className="pt-0">
+                  <div className="space-y-3">
+                    {/* Durée */}
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="p-1.5 bg-primary/10 rounded-lg">
+                        <Clock className="h-3.5 w-3.5 text-primary" />
+                      </div>
+                      <span className="font-medium text-foreground">
+                        {module.duree} heure{module.duree !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+                    
+                    {/* Métadonnées */}
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-border/50">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        <span>Créé récemment</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <User className="h-3 w-3" />
+                        <span>TGCC</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>{module.duree} heure{module.duree !== 1 ? 's' : ''}</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
-      {/* Dialog de modification */}
+        {/* Dialog de modification */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -283,6 +366,7 @@ const ModuleList = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
     </div>
   );
 };
