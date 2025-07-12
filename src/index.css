@@ -17,19 +17,18 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 262 83% 58%;
+    --primary: 214 95% 45%;
     --primary-foreground: 0 0% 98%;
-    --primary-hover: 262 83% 52%;
-    --primary-light: 262 100% 95%;
+    --primary-hover: 214 95% 40%;
 
-    --secondary: 262 30% 95%;
-    --secondary-foreground: 262 50% 25%;
+    --secondary: 214 95% 95%;
+    --secondary-foreground: 214 95% 25%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 262 100% 92%;
-    --accent-foreground: 262 50% 15%;
+    --accent: 214 95% 92%;
+    --accent-foreground: 214 95% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -42,29 +41,24 @@ All colors MUST be HSL.
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 262 83% 58%;
+    --ring: 214 95% 45%;
 
-    --radius: 0.75rem;
-
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(242 83% 65%));
-    --gradient-secondary: linear-gradient(135deg, hsl(220 70% 95%), hsl(262 50% 95%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(262 20% 98%));
-    --gradient-glass: linear-gradient(145deg, hsl(0 0% 100% / 0.9), hsl(262 20% 98% / 0.8));
-
-    /* Shadows */
-    --shadow-soft: 0 4px 6px -1px hsl(262 20% 15% / 0.1), 0 2px 4px -1px hsl(262 20% 15% / 0.06);
-    --shadow-medium: 0 10px 15px -3px hsl(262 20% 15% / 0.1), 0 4px 6px -2px hsl(262 20% 15% / 0.05);
-    --shadow-large: 0 25px 50px -12px hsl(262 20% 15% / 0.25);
-    --shadow-glow: 0 0 0 1px hsl(262 83% 58% / 0.05), 0 4px 16px hsl(262 83% 58% / 0.12);
+    --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
+
     --sidebar-foreground: 240 5.3% 26.1%;
+
     --sidebar-primary: 240 5.9% 10%;
+
     --sidebar-primary-foreground: 0 0% 98%;
+
     --sidebar-accent: 240 4.8% 95.9%;
+
     --sidebar-accent-foreground: 240 5.9% 10%;
+
     --sidebar-border: 220 13% 91%;
+
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
