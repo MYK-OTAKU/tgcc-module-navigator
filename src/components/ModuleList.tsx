@@ -62,7 +62,7 @@ const ModuleList = () => {
 
   const handleEditClick = (module: Module) => {
     setEditingModule(module);
-    setEditForm({ nom: module.nom, duree: module.duree });
+    setEditForm({ nom: module.nom || '', duree: module.duree || 0 });
     setIsEditDialogOpen(true);
   };
 
@@ -139,7 +139,7 @@ const ModuleList = () => {
             {modules.length} module{modules.length !== 1 ? 's' : ''} disponible{modules.length !== 1 ? 's' : ''}
           </p>
         </div>
-        <Link to="/add-module">
+        <Link to="/add">
           <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
             <Plus className="h-4 w-4 mr-2" />
             Nouveau module
@@ -156,7 +156,7 @@ const ModuleList = () => {
               <p className="text-muted-foreground mb-6">
                 Commencez par ajouter votre premier module !
               </p>
-              <Link to="/add-module">
+              <Link to="/add">
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
                   Ajouter un module
@@ -228,8 +228,8 @@ const ModuleList = () => {
               </Label>
               <Input
                 id="nom"
-                value={editForm.nom}
-                onChange={(e) => setEditForm({ ...editForm, nom: e.target.value })}
+                value={editForm.nom || ''}
+                onChange={(e) => setEditForm({ ...editForm, nom: e.target.value || '' })}
                 className="col-span-3"
               />
             </div>
@@ -240,7 +240,7 @@ const ModuleList = () => {
               <Input
                 id="duree"
                 type="number"
-                value={editForm.duree}
+                value={editForm.duree || 0}
                 onChange={(e) => setEditForm({ ...editForm, duree: parseInt(e.target.value) || 0 })}
                 className="col-span-3"
               />
@@ -251,7 +251,7 @@ const ModuleList = () => {
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} disabled={operationLoading}>
               Annuler
             </Button>
-            <Button onClick={handleEditSubmit} disabled={operationLoading || !editForm.nom.trim()}>
+            <Button onClick={handleEditSubmit} disabled={operationLoading || !editForm.nom?.trim()}>
               {operationLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sauvegarder
             </Button>

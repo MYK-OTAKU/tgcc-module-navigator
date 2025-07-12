@@ -71,7 +71,7 @@ const AddModule = () => {
 
       // Redirect to modules list after a short delay
       setTimeout(() => {
-        navigate('/modules');
+        navigate('/');
       }, 1500);
 
     } catch (error) {

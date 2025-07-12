@@ -22,7 +22,9 @@ const App = () => (
             <Navigation />
             <Routes>
               <Route path="/" element={<ModulesPage />} />
+              <Route path="/modules" element={<ModulesPage />} />
               <Route path="/add" element={<AddModulePage />} />
+              <Route path="/add-module" element={<AddModulePage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
